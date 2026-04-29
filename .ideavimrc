@@ -55,13 +55,16 @@ nnoremap <leader>/ :noh<CR>
 
 "" Navigation
 nmap <Leader>j :action PreviousTab<CR>
-nmap <Leader>k :action NextTab<CR>
 
+nmap <Leader>k :action NextTab<CR>
     " Move between splits using arrow keys
 nmap <C-Left>  <C-w>h
 nmap <C-Right> <C-w>l
 nmap <C-Down>  <C-w>j
 nmap <C-Up>    <C-w>k
+
+nmap <C-A-Left> <Action>(Back)
+nmap <C-A-Right> <Action>(Forward)
 
 """ My Mappings -----------------------------
 
