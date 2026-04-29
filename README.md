@@ -1,120 +1,216 @@
-# IdeaVim Configuration
+# IdeaVim Configuration Guide
 
-This repo is a simple/basic yet powerful configuration of the IdeaVim keymaps that works well with any Jetbrains IDE with the support of the IdeaVim plug.
-Take note that the keymaps used is strongly based on the youtube tutorial of IdeaVim Cast on YT.
+This document explains how the current `.ideavimrc` works, what plugins are enabled, and the most important shortcuts/combos.
 
-## Sections
+## Overview
 
-The config of this *vimrc* is based in 5 parts:
+- **Leader key**: `Space`
+- **Main goals**:
+  - Faster navigation between files, tabs, methods, and splits
+  - Quick access to IntelliJ/Android Studio actions from Vim mode
+  - Better editing workflow with EasyMotion, multi-cursor, and refactor shortcuts
 
-  - [Basic/Default configuration from IdeaVim installation](#Basic/Default-configuration)
-  - [Customization of the editor & plugins for Vim](#Customization-of-the-editor-&-plugins-for-Vim)
-  - [Exit modes](#Exit-modes)
-  - [Navigation](#Navigation)
-  - [NERDTree](#NERDTree)
-  
-### Basic/Default configuration
+## Plugins Enabled
 
-As the title says, just a normal, predefined lines from the clean instalation from IdeaVim that works best for IntelliJ
+- `easymotion/vim-easymotion`
+- `preservim/nerdtree`
+- `machakann/vim-highlightedyank`
 
-```
-"source ~/.vimrc
+Also enabled through `set` options:
 
-"" -- Suggested options --
-" Show a few lines of context around the cursor. Note that this makes the
-" text scroll if you mouse-click near the start or end of the window.
-set scrolloff=5
+- `surround`
+- `multiple-cursors`
+- `argtextobj`
+- `commentary`
+- `which-key`
 
-" Do incremental searching.
-set incsearch
+## Core Editor Behavior
 
-" Don't use Ex mode, use Q for formatting.
-map Q gq
-```
+- Relative + absolute line numbers: `set number relativenumber`
+- Search behavior:
+  - `ignorecase` + `smartcase`
+  - incremental search (`incsearch`)
+  - highlight results (`hlsearch`)
+- Clipboard integration: `set clipboard+=unnamed`
+- IDE-aware line join: `set ideajoin`
+- No key timeout: `set notimeout`
 
-### Customization of the editor & plugins for Vim
+## Mode / Quality-of-Life Mappings
 
-In this section is just a simple configuration of the editor view from the IDE itself, taking for example setting relative numbers instead of showing the number of the code in the editor, this change is used to move faster and get how many lines to jump; also taking with the installation of [easymotion](https://github.com/easymotion/vim-easymotion) & [NERDTree](https://github.com/preservim/nerdtree).
+- **Exit insert mode quickly**: `jk` → `<Esc>`
+- **Clear search highlight**: `<leader>/`
+- **Reformat code**: `\r`
+- **Firebender accept completion**: `<Tab>`
 
-Take note that the leader key in this config is the *Space* key
+## Word Motion Improvements
 
-```
-Plug 'easymotion/vim-easymotion'
-Plug 'preservim/nerdtree'
+These remap word motions to better handle camelCase/snake_case navigation:
 
-set number relativenumber
-set ideajoin
-set easymotion
-set surround
+- `w` → `[w`
+- `e` → `]w`
+- `b` → `[b`
+- `ge` → `[b`
 
-"" Leader key
-let mapleader = " "
-```
+## EasyMotion
 
-### Exit Modes
+- `<leader>f` → EasyMotion `s`
+- `<leader>e` → EasyMotion `f`
 
-Instead of using the `ESC` key everytime you need to exit the INSERT mode from Vim, just create a remap of that command to a `jk` or `kj` press:
+## Go To / Code Navigation
 
-```
-"" Easy exit mode
-inoremap jk <esc>
-inoremap kj <esc>
+- `gd` → Go to declaration
+- `gy` → Go to type declaration
+- `gI` → Go to implementation
+- `gn` → Next method
+- `gp` → Previous method
 
-```
+## Tab + Split Navigation
 
-### Navigation
+### Tabs
 
-Here we have an interesting setup for the IDE itself, we use as usual `h j k l` as the navigation cluster to move between tabs and splitted windows.
+- `<leader>j` → Previous tab
+- `<leader>k` → Next tab
 
-```
-"" Navigation
-nmap <Leader>j :action PreviousTab<CR>
-nmap <Leader>k :action NextTab<CR>
+### Split focus movement
 
-nmap <c-\> :action SplitVertically<CR>
-nmap <c--> :action SplitHorizontally<CR>
-nmap <c-=> :action Unsplit<CR>
-nmap <c-m> :action MoveEditorToOppositeTabGroup<CR>
+- `Ctrl + Left/Right/Down/Up` → move focus between splits
+- `Alt + j/k/l/;` (normal mode):
+  - `Alt+j` → left split
+  - `Alt+k` → bottom split
+  - `Alt+l` → top split
+  - `Alt+;` → right split
+- Same `Alt` mappings also work from insert mode (auto-exit insert first)
 
-sethandler <c-j> a:vim
-sethandler <c-k> a:vim
+### Split management
 
-nmap <c-h> <c-w>h
-nmap <c-l> <c-w>l
-nmap <c-j> <c-w>j
-nmap <c-k> <c-w>k
-```
+- `<leader>sv` → Vertical split
+- `<leader>sh` → Horizontal split
+- `<leader>sw` → Close current split/editor tab
+- `<leader>sa` → Close all other splits/editors
 
-It's configured to use `CTRL+<key>` to split or move the focused tab & `CTRL+<h,j,k,l>` to move the focus when having multiple windows in the same IDE.
+## Which-Key Groups (Leader Menus)
 
-Don't forget to see that to move between tabs in the same group we use `<Leader>+j` or `<Leader>+k` instead of `h` & `l`, this is configured in that way becuase of the ease of access and following the extension keymap of Vimium.
+### Actions
 
-### NERDTree
+- `<leader>a` → Quick Fix / Intentions
 
-I added support of NERDTree to move easily between the files of the file tree of the project itself but still I use a lot the `Shift + Shift` keymap to open a certain file easily as an habit from my side.
+### Search (`<leader>s`)
 
-```
-"" NERDTreeNavigation
-"" Commands:
-""  Ctrl-n  Opens NERDTree window
-""  q       Close the NERDTree window
-""  o       Open files, directories and bookmarks
-""  go      Open selected file, but leave cursor in NERDTree
-""  <C-J>
-""  <C-K>
-""  R       Refresh directories
-""  m       Show nerdtree menu
-set NERDTree
+- `<leader>se` → Search Everywhere
+- `<leader>sr` → Recent Files
+- `<leader>su` → Find Usages
+- `<leader>sp` → Recent Projects
 
-map <c-n> :NERDTree<CR>
+### Navigation (`<leader>n`)
 
-let g:NERDTreeMapActivateNode='j'
-let g:NERDTreeMApJumpParent='k'
-":NERDTreeFocus
-":NERDTreeToggle
-":NERDTreeClose
-":NERDTreeFind
-":NERDTreeRefreshRoot
-```
+- `<leader>ne` → Next Error
+- `<leader>no` → Next Occurrence
+- `<leader>ns` → Switcher
+- `<leader>nn` → Go to Line
+- `<leader>n,` → Back
+- `<leader>n.` → Forward
 
-Full documentation of NERDTree and how to use it is [here.](https://github.com/preservim/nerdtree)
+### Git (`<leader>g`)
+
+- `<leader>gg` → Commit/Checkin
+- `<leader>gc` → Branches
+- `<leader>gp` → Commit & Push
+- `<leader>gP` → Push
+- `<leader>gm` → Git menu
+- `<leader>gf` → Fetch
+- `<leader>ga` → Annotate / blame
+- `<leader>gl` → Version Control tool window
+- `<leader>gt` → Commit tool window
+
+### Gradle / Build (`<leader>G`)
+
+- `<leader>Gg` → Android sync project
+- `<leader>Gs` → Sync all external projects
+- `<leader>Gc` → Execute Gradle task
+- `<leader>Gb` → Compile dirty
+- `<leader>GB` → Make project
+- `<leader>Gr` → Refresh dependencies
+- `<leader>GC` → Compile project
+- `<leader>GR` → Rebuild project
+- `<leader>Gt` → Gradle tool window
+- `<leader>Gv` → Build variants
+- `<leader>Gl` → Show Gradle daemons
+
+### Run (`<leader>r`)
+
+- `<leader>rn` → Run
+- `<leader>rc` → Choose run configuration
+- `<leader>rs` → Stop
+- `<leader>rr` → Rerun
+- `<leader>rd` → Debug class
+- `<leader>rh` → Test history/import tests
+- `<leader>rm` → Run menu
+- `<leader>rf` → Rerun failed tests
+
+### Debug (`<leader>d`)
+
+- `<leader>dt` → Toggle breakpoint
+- `<leader>ds` → Start listening
+- `<leader>do` → Step over
+- `<leader>di` → Step into
+- `<leader>dr` → Evaluate expression
+- `<leader>dC` → Run to cursor
+- `<leader>dc` → Resume
+
+### Multi-cursor (`<leader>m`)
+
+- `<leader>mj` → Add cursor below
+- `<leader>mk` → Add cursor above
+- `<leader>mn` → Select next occurrence
+- `<leader>mN` → Unselect previous occurrence
+- `<leader>ma` → Select all occurrences
+- `<leader>ml` (visual) → Cursor per selected line
+- `<leader>ms` → Skip occurrence
+- `<leader>mr` → Remove all extra cursors
+
+### Visual multi-cursor (`<leader>v`)
+
+- `<leader>vj` (visual) → Add cursor down
+- `<leader>vk` (visual) → Add cursor up
+- `<leader>vn` → Select next match
+- `<leader>va` → Select all matches
+
+### Language / Refactor (`<leader>l`)
+
+- `<leader>lm` → Refactor menu
+- `<leader>lr` → Rename
+- `<leader>lc` → Change signature
+- `<leader>lv` → Introduce variable
+- `<leader>lR` (visual) → Extract method/function
+- `<leader>lf` → Reformat code
+- `<leader>oi` → Optimize imports
+- `<leader>ls` → File structure popup
+
+### Tool windows (`<leader>t`)
+
+- `<leader>tr` → Run window
+- `<leader>td` → Debug window
+- `<leader>tg` → Version control window
+- `<leader>tt` → Terminal window
+- `<leader>tl` → Logcat window
+
+## NERDTree
+
+- `Ctrl+n` → Open NERDTree
+- Inside NERDTree:
+  - `j` → Activate/open node
+  - `k` → Jump parent
+
+Useful commands (manual):
+
+- `:NERDTreeFocus`
+- `:NERDTreeToggle`
+- `:NERDTreeClose`
+- `:NERDTreeFind`
+- `:NERDTreeRefreshRoot`
+
+## Notes
+
+- If a mapping does not work, check if the target IDE action exists in your IDE version.
+- To discover action IDs, use `:actionlist` or `Ctrl+Shift+A` and inspect action names.
+- This setup is optimized for JetBrains IDEs + IdeaVim plugin.
